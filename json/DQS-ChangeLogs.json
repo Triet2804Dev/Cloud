@@ -5,6 +5,6 @@
   },
   {
     "Version": "1.001",
-    "ChangeLogs": "+Add new bla bla bla\n+Add new something"
+    "ChangeLogs": "+Fixed Discord app detection issue\n+Fixed unknown issues\n+Added Credits & ChangeLogs buttons\n+Added Dropdown GIF\n+Added 7 loading GIFs\n+Added Random GIF"
   }
 ]
