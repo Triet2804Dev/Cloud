@@ -5,6 +5,6 @@
   },
   {
     "Version": "1.001",
-    "ChangeLogs": "+Fixed Discord app detection issue.\n+Fixed unknown issues.\n+Added Credits & ChangeLogs buttons.\n+Added Dropdown GIF.\n+Added 7 loading GIFs.\n+Added Random GIF.\n+Added button Enroll Orbs quest."
+    "ChangeLogs": "+Fixed Discord app detection issue.\n+Fixed unknown issues.\n+Added Credits & ChangeLogs buttons.\n+Added Dropdown GIF.\n+Added 7 loading GIFs.\n+Added Random GIF.\n+Added Enroll Orbs quest button.\n+Fixed issues causing incorrect/desynchronized game simulation timing."
   }
 ]
