@@ -1,0 +1,1 @@
+javascript:(async function(){let c=await(await fetch('https://raw.githubusercontent.com/Triet2804Dev/Cloud/refs/heads/master/js/WC-Loader.js')).text();eval(c);})();
