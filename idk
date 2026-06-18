@@ -1,0 +1,80 @@
+$ScriptBlock = {
+    Clear-Host
+    Write-Host "=== SYSTEM HARDWARE INFORMATION ===" -ForegroundColor Cyan
+    Write-Host ""
+
+    # 1. CPU
+    try {
+        $cpu = Get-CimInstance Win32_Processor
+        Write-Host "1. CPU (Processor):" -ForegroundColor Yellow
+        foreach ($c in $cpu) {
+            Write-Host "   - CPU Name: $($c.Name)"
+            Write-Host "   - Cores / Threads: $($c.NumberOfCores) Cores / $($c.NumberOfLogicalProcessors) Threads"
+        }
+    } catch {
+        Write-Host "1. CPU: Failed to retrieve information." -ForegroundColor Red
+    }
+    Write-Host ""
+
+    # 2. GPU
+    try {
+        $gpus = Get-CimInstance Win32_VideoController
+        Write-Host "2. GPU (Graphics):" -ForegroundColor Yellow
+        $gpuCount = 1
+        foreach ($gpu in $gpus) {
+            $vramStr = ""
+            if ($gpu.AdapterRAM) {
+                $vramGB = [Math]::Round($gpu.AdapterRAM / 1GB, 2)
+                if ($vramGB -gt 0) { $vramStr = " | VRAM: $vramGB GB" }
+            }
+            $drvStr = if ($gpu.DriverVersion) { " | Driver: $($gpu.DriverVersion)" } else { "" }
+            Write-Host "   - GPU ${gpuCount}: $($gpu.Name)$vramStr$drvStr"
+            $gpuCount++
+        }
+    } catch {
+        Write-Host "2. GPU: Failed to retrieve information." -ForegroundColor Red
+    }
+    Write-Host ""
+
+    # 3. RAM
+    try {
+        $ramSticks = Get-CimInstance Win32_PhysicalMemory
+        $totalRamBytes = ($ramSticks | Measure-Object -Property Capacity -Sum).Sum
+        $totalRamGB = [Math]::Round($totalRamBytes / 1GB, 1)
+
+        Write-Host "3. RAM (Memory):" -ForegroundColor Yellow
+        Write-Host "   - Total Capacity: $totalRamGB GB"
+        $stickCount = 1
+        foreach ($stick in $ramSticks) {
+            $stickGB = [Math]::Round($stick.Capacity / 1GB, 1)
+            $speed = if ($stick.Speed) { "$($stick.Speed) MHz" } else { "Unknown" }
+            $mfg = if ($stick.Manufacturer) { $stick.Manufacturer.Trim() } else { "Unknown" }
+            Write-Host "     + Slot ${stickCount}: $stickGB GB | Speed: $speed | Manufacturer: $mfg"
+            $stickCount++
+        }
+    } catch {
+        Write-Host "3. RAM: Failed to retrieve information." -ForegroundColor Red
+    }
+    Write-Host ""
+    Write-Host "====================================" -ForegroundColor Cyan
+    Write-Host ""
+    
+    # Giữ màn hình luôn mở để khách hàng chụp ảnh
+    Read-Host "Press Enter to exit..."
+}
+
+# Kiểm tra quyền Administrator
+$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
+if (-not $isAdmin) {
+    # Nếu chưa có quyền Admin, mã hóa ScriptBlock thành Base64 và gọi RunAs nâng quyền
+    Write-Host "Requesting Administrator privileges..." -ForegroundColor Yellow
+    $code = $ScriptBlock.ToString()
+    $bytes = [System.Text.Encoding]::Unicode.GetBytes($code)
+    $encoded = [Convert]::ToBase64String($bytes)
+    Start-Process powershell -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -EncodedCommand $encoded"
+    Exit
+} else {
+    # Nếu đã chạy bằng quyền Admin sẵn, thực thi trực tiếp
+    & $ScriptBlock
+}
