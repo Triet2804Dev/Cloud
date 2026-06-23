@@ -1,1 +1,154 @@
+# Clear screen for a clean start
+Clear-Host
 
+# 1. Custom logger function for professional output
+function Write-Log {
+    param(
+        [string]$Message,
+        [string]$Level = "INFO"
+    )
+    $color = "Cyan"
+    $prefix = "[*]"
+    switch ($Level.ToUpper()) {
+        "SUCCESS" { $color = "Green"; $prefix = "[+]" }
+        "WARNING" { $color = "Yellow"; $prefix = "[!]" }
+        "ERROR"   { $color = "Red"; $prefix = "[-]" }
+        "INFO"    { $color = "Cyan"; $prefix = "[*]" }
+    }
+    Write-Host "$prefix " -NoNewline -ForegroundColor $color
+    Write-Host $Message
+}
+
+# Nice CLI Banner
+Write-Host "==================================================" -ForegroundColor Gray
+Write-Host "          PrismLauncher Accounts Setup            " -ForegroundColor White
+Write-Host "==================================================" -ForegroundColor Gray
+Write-Host ""
+
+# 2. Define the JSON content
+$jsonContent = @'
+{
+    "accounts": [
+        {
+            "entitlement": {
+                "canPlayMinecraft": true,
+                "ownsMinecraft": true
+            },
+            "msa-client-id": "",
+            "profile": {
+                "capes": [
+                ],
+                "id": "9999d88a112537a0a302f01afa6bc94a",
+                "name": "CrackByTriet2804 - github.com/Triet2804Dev",
+                "skin": {
+                    "id": "",
+                    "url": "",
+                    "variant": ""
+                }
+            },
+            "type": "MSA"
+        },
+        {
+            "active": true,
+            "entitlement": {
+                "canPlayMinecraft": true,
+                "ownsMinecraft": true
+            },
+            "profile": {
+                "capes": [
+                ],
+                "id": "1111d88a112537a0a302f01afa6bc94a",
+                "name": "MyName",
+                "skin": {
+                    "id": "",
+                    "url": "",
+                    "variant": ""
+                }
+            },
+            "type": "Offline",
+            "ygg": {
+                "extra": {
+                    "clientToken": "8be89b1112474b5fb8f061699ff41bda",
+                    "userName": "MyName"
+                },
+                "iat": 1738858981,
+                "token": "0"
+            }
+        }
+    ],
+    "formatVersion": 3
+}
+'@
+
+$found = $false
+
+# 3. Check default path in AppData
+Write-Log "Checking default directory in AppData..." "INFO"
+$defaultPath = Join-Path $env:APPDATA "PrismLauncher"
+$targetFile = Join-Path $defaultPath "accounts.json"
+
+if (Test-Path $defaultPath) {
+    Write-Log "Default directory found: $defaultPath" "SUCCESS"
+    Write-Log "Applying changes to accounts.json..." "INFO"
+    $jsonContent | Out-File -FilePath $targetFile -Encoding utf8 -Force
+    Write-Log "Accounts configuration updated successfully!" "SUCCESS"
+    $found = $true
+} else {
+    # 4. Fallback: Scan other drives
+    Write-Log "PrismLauncher not found in default AppData directory." "WARNING"
+    Write-Log "Initiating system-wide drive scan. This may take a moment..." "INFO"
+
+    # Get active drives
+    $drives = Get-PSDrive -PSProvider FileSystem | Where-Object { $_.Free -ne $null } | Select-Object -ExpandProperty Root
+
+    foreach ($drive in $drives) {
+        Write-Log "Scanning drive: $drive" "INFO"
+        
+        # Get top-level folders, skipping large system directories to optimize speed
+        $folders = Get-ChildItem -Path $drive -Directory -ErrorAction SilentlyContinue | 
+                   Where-Object { $_.Name -notmatch "Windows|Program Files|Program Files \(x86\)|\$Recycle\.Bin|ProgramData|System Volume Information" }
+                   
+        foreach ($folder in $folders) {
+            # Skip Scanning the user's AppData recursively during global scan since it was checked
+            if ($folder.Name -eq "Users") {
+                # Target user folders directly but skip standard hidden AppData recursion to save time
+                $userSubfolders = Get-ChildItem -Path $folder.FullName -Directory -ErrorAction SilentlyContinue
+                foreach ($sub in $userSubfolders) {
+                    $launcherDir = Get-ChildItem -Path $sub.FullName -Filter "*PrismLauncher*" -Directory -Recurse -ErrorAction SilentlyContinue | 
+                                   Where-Object { $_.FullName -notmatch "AppData" } | Select-Object -First 1
+                    if ($launcherDir) { break }
+                }
+            } else {
+                $launcherDir = Get-ChildItem -Path $folder.FullName -Filter "*PrismLauncher*" -Directory -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+            }
+
+            if ($launcherDir) {
+                $configPath = $launcherDir.FullName
+                # Handle portable mode if it has a UserData subfolder
+                if (Test-Path (Join-Path $launcherDir.FullName "UserData")) {
+                    $configPath = Join-Path $launcherDir.FullName "UserData"
+                }
+                
+                $targetFile = Join-Path $configPath "accounts.json"
+                Write-Log "PrismLauncher directory found: $configPath" "SUCCESS"
+                Write-Log "Applying changes to accounts.json..." "INFO"
+                
+                $jsonContent | Out-File -FilePath $targetFile -Encoding utf8 -Force
+                Write-Log "Accounts configuration updated successfully!" "SUCCESS"
+                $found = $true
+                break
+            }
+        }
+        if ($found) { break }
+    }
+}
+
+if (-not $found) {
+    Write-Log "Failed to locate any PrismLauncher directory on this system." "ERROR"
+}
+
+# 5. Pause execution to allow user to read the output
+Write-Host ""
+Write-Host "==================================================" -ForegroundColor Gray
+Write-Host "Press any key to close this window..." -ForegroundColor Gray
+$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
