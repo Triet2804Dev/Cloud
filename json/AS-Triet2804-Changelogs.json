@@ -1,1 +1,6 @@
-
+[
+  {
+    "Version": "1.0.3.103004",
+    "Changelog": "+Add abcxyz\n+Fix no more virus.\n-Remove bla bla bla."
+  }
+]
