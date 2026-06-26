@@ -1,5 +1,9 @@
 [
   {
+    "Version": "1.0.4.104000",
+    "Changelog": "+New UI.\n+New Tab 'Change logs' to view new thing update.\n+New Tab 'Visual Search.'\n+New Function Visual Search use Safebooru to get image to complete Microsoft Reward Quest.\n+New Tab 'Daily Activities'."
+  },
+  {
     "Version": "1.0.3.103004",
     "Changelog": "+Add abcxyz\n+Fix no more virus.\n-Remove bla bla bla."
   },
