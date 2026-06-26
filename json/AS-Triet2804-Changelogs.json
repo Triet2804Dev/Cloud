@@ -5,8 +5,12 @@
       "+ Added a new UI.",
       "+ Added 'Changelogs' tab to view recent updates.",
       "+ Added 'Visual Search' tab.",
-      "+ Added Visual Search feature using Safebooru to complete Microsoft Reward Quests.",
-      "+ Added 'Daily Activities' tab."
+      "+ Added Visual Search feature using Safebooru to fetch images for Microsoft Rewards Quests.",
+      "+ Added 130+ keywords to fetch images for the Visual Search feature.",
+      "+ Added 'Daily Activities' tab.",
+      "+ Added 'Full Automation Mode' & 'Schedule Tab' toggles to the 'Settings' tab.",
+      "- Temporarily disabled the 'Auto Activities' toggle in the 'Settings' tab.",
+      "- Removed the 'Daily Activities' button from the 'Settings' tab."
     ]
   },
   {
