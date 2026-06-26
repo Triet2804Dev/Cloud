@@ -1,30 +1,54 @@
 [
   {
     "Version": "1.0.4.104000",
-    "Changelog": "+New UI.\n+New Tab 'Change logs' to view new thing update.\n+New Tab 'Visual Search.'\n+New Function Visual Search use Safebooru to get image to complete Microsoft Reward Quest.\n+New Tab 'Daily Activities'."
+    "Changelog": [
+      "+ Added a new UI.",
+      "+ Added 'Changelogs' tab to view recent updates.",
+      "+ Added 'Visual Search' tab.",
+      "+ Added Visual Search feature using Safebooru to complete Microsoft Reward Quests.",
+      "+ Added 'Daily Activities' tab."
+    ]
   },
   {
     "Version": "1.0.3.103004",
-    "Changelog": "+Add abcxyz\n+Fix no more virus.\n-Remove bla bla bla."
+    "Changelog": [
+      "+ Add abcxyz",
+      "+ Fix no more virus.",
+      "- Remove bla bla bla."
+    ]
   },
   {
     "Version": "1.0.3.103003",
-    "Changelog": "+Add abcxyz\n-Remove bla bla bla."
+    "Changelog": [
+      "+ Add abcxyz",
+      "- Remove bla bla bla."
+    ]
   },
   {
     "Version": "1.0.3.103002",
-    "Changelog": "-Remove bla bla bla."
+    "Changelog": [
+      "- Remove bla bla bla."
+    ]
   },
   {
     "Version": "1.0.3.103001",
-    "Changelog": "+Add abcxyz\n+Fix no more virus.\n-Remove bla bla bla."
+    "Changelog": [
+      "+ Add abcxyz",
+      "+ Fix no more virus.",
+      "- Remove bla bla bla."
+    ]
   },
   {
     "Version": "1.0.3.103000",
-    "Changelog": "+Add abcxyz\n-Remove bla bla bla."
+    "Changelog": [
+      "+ Add abcxyz",
+      "- Remove bla bla bla."
+    ]
   },
   {
     "Version": "1.0.3.102999",
-    "Changelog": "-Remove bla bla bla."
+    "Changelog": [
+      "- Remove bla bla bla."
+    ]
   }
 ]
