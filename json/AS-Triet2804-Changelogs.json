@@ -5,12 +5,14 @@
       "+ Added a new UI.",
       "+ Added 'Changelogs' tab to view recent updates.",
       "+ Added 'Visual Search' tab.",
-      "+ Added Visual Search feature using Safebooru to fetch images for Microsoft Rewards Quests.",
+      "+ Added Visual Search feature using Safebooru to fetch images.",
       "+ Added 130+ keywords to fetch images for the Visual Search feature.",
       "+ Added 'Daily Activities' tab.",
       "+ Added 'Daily', 'Punch Cards', & 'Claim Point' buttons to the 'Daily Activities' tab.",
       "+ Added customizable retry attempts for 'Daily' and added new functionality to 'Claim Point'.",
       "+ Added 'Full Automation Mode' & 'Schedule Tab' toggles to the 'Settings' tab.",
+      "+ Added 'Automation' tab.",
+      "+ Added 'Check Missing Search' toggles to the 'Settings' tab.", 
       "- Temporarily disabled the 'Auto Activities' toggle in the 'Settings' tab.",
       "- Removed the 'Daily Activities' button from the 'Settings' tab."
     ]
