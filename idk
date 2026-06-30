@@ -16,17 +16,42 @@ $ScriptBlock = {
     }
     Write-Host ""
 
-    # 2. GPU
+    # 2. GPU (Đã sửa lỗi hiển thị sai VRAM vượt quá 4GB)
     try {
         $gpus = Get-CimInstance Win32_VideoController
         Write-Host "2. GPU (Graphics):" -ForegroundColor Yellow
         $gpuCount = 1
         foreach ($gpu in $gpus) {
-            $vramStr = ""
-            if ($gpu.AdapterRAM) {
-                $vramGB = [Math]::Round($gpu.AdapterRAM / 1GB, 2)
-                if ($vramGB -gt 0) { $vramStr = " | VRAM: $vramGB GB" }
+            $vramBytes = 0
+            
+            # Đọc dung lượng VRAM chính xác từ Registry bằng cách khớp mã PNPDeviceID
+            if ($gpu.PNPDeviceID) {
+                # Tách chuỗi lấy Vendor ID và Device ID, ví dụ: "PCI\VEN_10DE&DEV_2504"
+                $deviceIdParts = $gpu.PNPDeviceID.Split('&')[0..1] -join '&'
+                if ($deviceIdParts) {
+                    $regPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0*"
+                    $regItem = Get-ItemProperty -Path $regPath -ErrorAction SilentlyContinue | Where-Object { 
+                        $_.MatchingDeviceId -and $_.MatchingDeviceId -like "*$deviceIdParts*" 
+                    } | Select-Object -First 1
+                    
+                    if ($regItem -and $regItem.'HardwareInformation.qwMemorySize') {
+                        # qwMemorySize là định dạng 64-bit lưu trữ dung lượng thật dưới dạng Bytes
+                        $vramBytes = $regItem.'HardwareInformation.qwMemorySize'
+                    }
+                }
             }
+            
+            # Phương án dự phòng (Fallback) nếu Registry không tìm thấy thì dùng lại AdapterRAM của WMI
+            if ($vramBytes -eq 0 -and $gpu.AdapterRAM) {
+                $vramBytes = $gpu.AdapterRAM
+            }
+
+            $vramStr = ""
+            if ($vramBytes -gt 0) {
+                $vramGB = [Math]::Round($vramBytes / 1GB, 2)
+                $vramStr = " | VRAM: $vramGB GB"
+            }
+            
             $drvStr = if ($gpu.DriverVersion) { " | Driver: $($gpu.DriverVersion)" } else { "" }
             Write-Host "   - GPU ${gpuCount}: $($gpu.Name)$vramStr$drvStr"
             $gpuCount++
