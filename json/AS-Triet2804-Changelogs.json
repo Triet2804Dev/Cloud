@@ -1,5 +1,11 @@
 [
   {
+    "Version": "1.0.4.104001",
+    "Changelog": [
+      "+ Fixed a bug where the Visual Search feature would not work."
+    ]
+  },
+  {
     "Version": "1.0.4.104000",
     "Changelog": [
       "+ Added a new UI.",
