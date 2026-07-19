@@ -2,11 +2,12 @@
   {
     "Version": "1.0.4.104002",
     "Changelog": [
+      "+ Added separate delay for PC and Mobile searches.",
       "+ Added 'Search Query Count' to the 'Search' tab to help complete the 'Default search bonus' task.",
-      "+ Optimized 'Full Automation' flow for better stability.",
-      "+ Improved login session handling to prevent automation errors.",
-      "+ Fixed a bug where reward data could not be retrieved due to login issues.",
-      "+ Fixed CORS and JSON parsing errors for Bing Rewards userInfo by adding an automatic session refresh mechanism."
+      "+ Optimized 'Full Automation' flow.",
+      "+ Improved login session handling.",
+      "+ Fixed reward data retrieval bugs.",
+      "+ Fixed CORS and JSON parsing errors."
     ]
   },
   {
